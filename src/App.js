@@ -1,5 +1,3 @@
-// add search wala part urself
-
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoadingBar from "react-top-loading-bar";
@@ -15,7 +13,6 @@ const App = () => {
   const searchFunction = (word) => {
     setSearchKeyword(word);
   };
-
   return (
     <div>
       <Router>

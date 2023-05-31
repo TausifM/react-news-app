@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import NewsItem from "../components/NewsItem";
 import Loading from "../components/Loading";
 import PropTypes from "prop-types";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { NewsUrl } from "../url";
 const NEWS_ORG_API_URL =  NewsUrl.NEWS_ORG_URL;
 
@@ -19,7 +19,7 @@ const Home = (props) => {
 
   const initalLoad = async () => {
     props.setProgress(10);
-    const url = `${NEWS_ORG_API_URL}?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pagesize=${props.pagesize}`;
+    const url = `${NEWS_ORG_API_URL}?country=${props.country}&category=${props.category}&apiKey=${`029e673eebf04e909534370f110dca7e`}&page=${page}&pagesize=${props.pagesize}`;
     setLoading(true);
     props.setProgress(30);
     let data = await fetch(url);
@@ -36,23 +36,14 @@ const Home = (props) => {
     initalLoad();
   }, []);
 
-  useEffect(() => {
-    const filteredArticles = articles.filter((article) =>
-      article.title.toLowerCase().includes(searchKeyword.toLowerCase())
-    );
-    setArticles(filteredArticles);
-    console.log("filteredArticles", filteredArticles);
-  }, [searchKeyword]);
-
   const fetchMoreData = async () => {
     setPage(page + 1);
-    const url = `${NEWS_ORG_API_URL}?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page + 1}&pagesize=${props.pagesize}`;
+    const url = `${NEWS_ORG_API_URL}?country=${props.country}&category=${props.category}&apiKey=${`029e673eebf04e909534370f110dca7e`}&page=${page + 1}&pagesize=${props.pagesize}`;
     let data = await fetch(url);
     let parsedData = await data.json();
-    setArticles(articles.concat(parsedData.articles));
+    setArticles(parsedData.articles);
     setTotalResults(parsedData.totalResults);
   };
-  console.log("saearching log", searchKeyword);
   return (
     <div>
     <h1 className="text-center" style={{ marginTop: "90px" }}>
@@ -63,11 +54,11 @@ const Home = (props) => {
       dataLength={articles.length}
       next={fetchMoreData}
       hasMore={articles.length !== totalResults}
-      loader={<Loading />}
+      loader={loading && <Loading />}
     >
       <div className="container">
         <div className="row">
-          {articles.map((element, index) => {
+          {articles.filter((article) => article.includes(searchKeyword.toLowerCase())).map((element, index) => {
             if (element.urlToImage != null) {
               return (
                 <div className="col-md-4" key={index}>
